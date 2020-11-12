@@ -16,7 +16,7 @@ CCGWAS( outcome_file , A_name , B_name , sumstats_fileA1A0 , sumstats_fileB1B0 ,
 }
 
 \value{
-	The output consists of three output files. The `outcome_file.log` file provides a logfile of the analyses. This file also reports the CC-GWAS_OLS weights and the CC-GWAS_Exact_ weights. The `outcome_file.pdf` file provides a plot of the genetic distances between cases and controls of both disorders in terms of F_ST,causal. The `outcome_file.results.gz` file reports results of the case-case association analyses. SNPs with significant case-case association are labelled as 1 in the `CCGWAS_signif` column. The other columns are
+	The XX output consists of three output files. The `outcome_file.log` file provides a logfile of the analyses. This file also reports the CC-GWAS_OLS weights and the CC-GWAS_Exact_ weights. The `outcome_file.pdf` file provides a plot of the genetic distances between cases and controls of both disorders in terms of F_ST,causal. The `outcome_file.results.gz` file reports results of the case-case association analyses. SNPs with significant case-case association are labelled as 1 in the `CCGWAS_signif` column. The other columns are
 
    \item{SNP, CHR, BP, EA, NEA}{As in the input case-control GWAS files.}
    \item{A1A0_beta, A1A0_se, A1A0_pval, B1B0_beta, B1B0_se, B1B0_pval}{Case-control effects expressed on the standardized observed scale with a 50/50 case-control ascertainment.}
