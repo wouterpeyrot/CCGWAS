@@ -10,6 +10,7 @@ CCGWAS <- function( outcome_file , A_name , B_name , sumstats_fileA1A0 , sumstat
   file_temp<-paste(outcome_file,".temp",sep="")
 
   start <- Sys.time()
+  file.create(file_log)
   show_line <- "CC-GWAS" ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
   show_line <- "" ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
   show_line <- paste("Analyses started at ", start ,sep=""); cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
