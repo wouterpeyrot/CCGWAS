@@ -1,6 +1,6 @@
 # Running CC-GWAS
 
-The `CCGWAS` R Package provides a tool for case-case association testing based on the case-control GWAS results of two different disorders. The CC-GWAS method is described in detail in Peyrot & Price. 2020 bioRxiv.
+The `CCGWAS` R Package provides a tool for case-case association testing based on the case-control GWAS results of two different disorders. The CC-GWAS method is described in detail in Peyrot & Price. 2020 bioRxiv. If you have any questions or suggestions for improvement, please do not hesitate to contact us at: peyrot.w@gmail.com.
 
 ## Getting Started
 
@@ -74,7 +74,7 @@ The `CCGWAS()` function provides three output files. The `outcome_file.log` file
 
 ## Preparing `CC-GWAS` results for follow-up analyses
 
-The `CCGWAS()` function saves detailed results for all SNPs in `outcome_file.results.gz`. We advise to (i) remove all SNPs that should be excluded based on the CC-GWAS<sub>Exact</sub> component and the filtering step to exclude potential false positive associations due to differential tagging of a causal stress test SNP, and (ii) resrtict to only the necessary columns for follow-up analyses.
+The `CCGWAS()` function saves detailed results for all SNPs in `outcome_file.results.gz`. We advise to (i) remove all SNPs that should be excluded based on the CC-GWAS<sub>Exact</sub> component and the filtering step to exclude potential false positive associations due to differential tagging of a causal stress test SNP, and (ii) restrict to only the necessary columns for follow-up analyses.
 
 ```[r]
 library(data.table)
