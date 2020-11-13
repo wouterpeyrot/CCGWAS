@@ -102,6 +102,7 @@ CCGWAS( outcome_file = "test.out" , A_name = "SCZ" , B_name = "BIP" ,
         K_B1B0 = 0.01 , K_B1B0_high = 0.005 , K_B1B0_low = 0.02 , 
         h2l_A1A0 = 0.2 , h2l_B1B0 = 0.20 , rg_A1A0_B1B0 = 0.70 , intercept_A1A0_B1B0 = 0.2425 , m = 1e4 ,  
         N_A1 = 40675 , N_B1 = 4819 , N_A0 = 20352 , N_B0 = 31358 , N_overlap_A0B0 = 24265 )
+        
 ``` 
 
 This provides the results for 10 SNPs from the schizophrenia (SCZ) vs bipolar disorder (BIP) case-case comparison, described in detail in Peyrot & Price. 2020 bioRxiv.
