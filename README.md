@@ -1,13 +1,12 @@
 # Running CC-GWAS
 
-The `CCGWAS` R Package provides a tool for case-case association testing of two different disorders based on their respective case-control GWAS results. The CC-GWAS method is described in detail in Peyrot & Price. 2020 bioRxiv. If you have any questions or suggestions for improvement, please let us know at: peyrot.w@gmail.com.
+The `CCGWAS` R package provides a tool for case-case association testing of two different disorders based on their respective case-control GWAS results. The CC-GWAS method is described in detail in Peyrot & Price. 2020 bioRxiv. If you have any questions or suggestions for improvement, please let us know at: peyrot.w@gmail.com.
 
 ## Getting Started
 
-Install the `CCGWAS` R Package as follows:
+Install the `CCGWAS` R package as follows:
 
 ```[r]
-library(MASS)
 library(data.table)
 library(R.utils)
 library(devtools)
@@ -15,11 +14,11 @@ install_github("wouterpeyrot/CCGWAS")
 library(CCGWAS)
 ``` 
 
-If the R Packages *MASS*, *data.table*, *R.utils* or *devtools* have not been installed in R, you can install them with the R command: `install.packages("...")`.
+If the R packages *data.table*, *R.utils* or *devtools* have not been installed in R, you can install them with the R command: `install.packages("...")`.
 
 ## Running `CC-GWAS`
 
-The `CCGWAS` R Package contains one function `CCGWAS()`. The input arguments of `CCGWAS()` are:
+The `CCGWAS` R package contains one function `CCGWAS()`. The input arguments of `CCGWAS()` are:
 
 * **outcome_file:** the name of the file where the outcome should be saved
 
@@ -79,6 +78,7 @@ The `CCGWAS()` function saves detailed results for all SNPs in `outcome_file.res
 
 ```[r]
 library(data.table)
+library(R.utils)
 d <- as.data.frame(fread("outcome_file.results.gz",header=TRUE))
 d <- d[ {d$OLS_pval<5e-8 & d$CCGWAS_signif==0}==FALSE ,] ## step (i)
 d <- d[,c("SNP","CHR","BP","EA","NEA","OLS_beta","OLS_se","OLS_pval","Exact_beta","Exact_se","Exact_pval","CCGWAS_signif")] ## step (ii): reduces number of columns from 23 to 12
@@ -92,7 +92,6 @@ We advise to use the results from the CC-GWAS<sub>OLS</sub> component (OLS_beta,
 Download the `test.casecontrol.gwas.BIP.10snps.txt.gz`, and `test.casecontrol.gwas.SCZ.10snps.txt.gz` files from the *test* folder and place in your working directory. Run the `CCGWAS()` function with:
 
 ```[r]
-library(MASS)
 library(data.table)
 library(R.utils)
 library(CCGWAS)
@@ -103,6 +102,7 @@ CCGWAS( outcome_file = "test.out" , A_name = "SCZ" , B_name = "BIP" ,
         K_B1B0 = 0.01 , K_B1B0_high = 0.005 , K_B1B0_low = 0.02 , 
         h2l_A1A0 = 0.2 , h2l_B1B0 = 0.20 , rg_A1A0_B1B0 = 0.70 , intercept_A1A0_B1B0 = 0.2425 , m = 1e4 ,  
         N_A1 = 40675 , N_B1 = 4819 , N_A0 = 20352 , N_B0 = 31358 , N_overlap_A0B0 = 24265 )
+        
 ``` 
 
 This provides the results for 10 SNPs from the schizophrenia (SCZ) vs bipolar disorder (BIP) case-case comparison, described in detail in Peyrot & Price. 2020 bioRxiv.
