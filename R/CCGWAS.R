@@ -11,17 +11,13 @@ CCGWAS <- function( outcome_file , A_name , B_name , sumstats_fileA1A0 , sumstat
 
   start <- Sys.time()
   show_line <- "CC-GWAS" ; cat(show_line,"\n") ; system(paste("echo '",show_line,"' > ",file_log,sep=""))
-  show_line <- "" ; cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))
-  show_line <- paste("Analyses started at ", start ,sep=""); cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))
-  show_line <- "" ; cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))
+  show_line <- "" ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
+  show_line <- paste("Analyses started at ", start ,sep=""); cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
+  show_line <- "" ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
 
   add_matrix_to_logfile<-function(w,print_rownames=TRUE){
-    if(print_rownames==TRUE ){write.matrix(cbind(c("",rownames(w)),rbind(colnames(w),as.matrix(w))), file=paste(file_temp,".temp1.txt",sep=""),sep="  ")} ## require MASS library
-    if(print_rownames==FALSE){write.matrix(rbind(colnames(w),as.matrix(w))                         , file=paste(file_temp,".temp1.txt",sep=""),sep="  ")} ## require MASS library
-    system(paste("cat ",paste(file_temp,".temp1.txt",sep="")," | awk '{if(NR>1)print}' > ",paste(file_temp,".temp2.txt",sep=""),sep=""))
-    system(paste("cat ",file_log," > ",paste(file_temp,".temp3.txt",sep=""),sep=""))
-    system(paste("cat ",paste(file_temp,".temp3.txt",sep="")," ",paste(file_temp,".temp2.txt",sep="")," > ",file_log,sep=""))
-    system(paste("rm ",paste(file_temp,".temp1.txt",sep="")," ",paste(file_temp,".temp2.txt",sep="")," ",paste(file_temp,".temp3.txt",sep=""),sep=""))
+    if(print_rownames==TRUE ){write.table(format(cbind(c("",rownames(w)),rbind(colnames(w),as.matrix(w))),justify="left"), file=file_log,col.names=FALSE,row.names=FALSE,quote=FALSE,sep="  ",append=TRUE)}
+    if(print_rownames==FALSE){write.table(format(rbind(colnames(w),as.matrix(w))                         ,justify="left"), file=file_log,col.names=FALSE,row.names=FALSE,quote=FALSE,sep="  ",append=TRUE)}
   }
 
   OR_to_scaled_linreg<-function(OR,pval,AF){
@@ -136,11 +132,11 @@ CCGWAS <- function( outcome_file , A_name , B_name , sumstats_fileA1A0 , sumstat
   if( {exists("sumstats_fileA1B1")==TRUE && is.na(sumstats_fileA1B1)==FALSE && file.exists(sumstats_fileA1B1)==TRUE}==FALSE ){
     include_A1B1<-FALSE 
     comparisons<-c("A1A0","B1B0") 
-    show_line <- "No information found of A1B1 comparison, CC-GWAS will be based on A1A0 and B1B0. Reading data..." ; cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))
-  }else{show_line <- "Information found of A1B1 comparison, CC-GWAS+ will be based on A1A0, B1B0, and A1B1. Reading data..." ; cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))}
+    show_line <- "No information found of A1B1 comparison, CC-GWAS will be based on A1A0 and B1B0. Reading data..." ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
+  }else{show_line <- "Information found of A1B1 comparison, CC-GWAS+ will be based on A1A0, B1B0, and A1B1. Reading data..." ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)}
 
   for(comparison in comparisons){
-    show_line <- "" ; cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))
+    show_line <- "" ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
     sumstats_file <- get(paste("sumstats_file",comparison,sep=""))
     if( {is.na(sumstats_file) || file.exists(sumstats_file)==FALSE}  ){stop(paste("File of ",comparison," comparison not found",sep=""))}
     stats <-as.data.frame(fread(sumstats_file,header=TRUE,na.strings=c("NA","")))
@@ -148,60 +144,60 @@ CCGWAS <- function( outcome_file , A_name , B_name , sumstats_fileA1A0 , sumstat
     if( length(which(colnames %in% colnames(stats)))!=length(colnames) ){stop(paste("Double-check column names of ",comparison,sep=""))}
     if( "SE" %in% colnames(stats)){ colnames<-c("SNP", "CHR","BP","EA","NEA","FRQ","OR","SE","P","Neff") }
     stats <- stats[,colnames] ;     colnames(stats)[which(colnames(stats)=="P")]<-"pval" ; nsnps <- dim(stats)[1]
-    show_line <- paste("Read data of ",format(nsnps,big.mark=",")," SNPs for ", comparison," from ",sumstats_file,", of these..." ,sep=""); cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))
+    show_line <- paste("Read data of ",format(nsnps,big.mark=",")," SNPs for ", comparison," from ",sumstats_file,", of these..." ,sep=""); cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
 
     ## delete missing values
     stats<-na.omit(stats) ; nsnps_new<-dim(stats)[1]
-    show_line <- paste("...",format(nsnps-nsnps_new,big.mark=",")," SNPs were deleted based on missing value in at least one column (" ,round(100*(nsnps-nsnps_new)/nsnps,digits=3) ,"%)",sep="") ; cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))
+    show_line <- paste("...",format(nsnps-nsnps_new,big.mark=",")," SNPs were deleted based on missing value in at least one column (" ,round(100*(nsnps-nsnps_new)/nsnps,digits=3) ,"%)",sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
     nsnps<-nsnps_new
 
     ## delete MAF<0.01
     if( exists("MAF_QC")==FALSE || MAF_QC==TRUE){ ## so that no loci are deleted in simulation
       stats<-stats[{stats$FRQ>0.01 & stats$FRQ<0.99},] ; nsnps_new<-dim(stats)[1]
-      show_line <- paste("...",format(nsnps-nsnps_new,big.mark=",")," SNPs were deleted based on MAF<=0.01" ,sep="") ; cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))
+      show_line <- paste("...",format(nsnps-nsnps_new,big.mark=",")," SNPs were deleted based on MAF<=0.01" ,sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
       nsnps<-nsnps_new
     }
 
     ## delete small Neff
     stats<-stats[{stats$Neff>=((2/3)*max(stats$Neff))},] ; nsnps_new<-dim(stats)[1]
-    show_line <- paste("...",format(nsnps-nsnps_new,big.mark=",")," SNPs were deleted with Neff < 2/3 of max(Neff)" ,sep="") ; cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))
+    show_line <- paste("...",format(nsnps-nsnps_new,big.mark=",")," SNPs were deleted with Neff < 2/3 of max(Neff)" ,sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
     nsnps<-nsnps_new
 
     ## delete duplicate SNP-names
     stats<-stats[{duplicated(stats$SNP,fromLast=FALSE) | duplicated(stats$SNP,fromLast=TRUE)}==FALSE,]; nsnps_new<-dim(stats)[1]
-    show_line <- paste("...",format(nsnps-nsnps_new,big.mark=",")," duplicate SNPs were deleted " ,sep="") ; cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))
+    show_line <- paste("...",format(nsnps-nsnps_new,big.mark=",")," duplicate SNPs were deleted " ,sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
     nsnps<-nsnps_new
 
     ## delete very large effects
-    show_line <- paste("...maximum OR = ",round(max(stats$OR),digits=2),", minimum OR = ", round(min(stats$OR),digits=2),sep="") ; cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))
+    show_line <- paste("...maximum OR = ",round(max(stats$OR),digits=2),", minimum OR = ", round(min(stats$OR),digits=2),sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
     stats<-stats[{stats$OR>=0.5 & stats$OR<=2},] ; nsnps_new<-dim(stats)[1]
-    show_line <- paste("...",format(nsnps-nsnps_new,big.mark=",")," SNPs were deleted based on OR>2 or OR<0.5" ,sep="") ; cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))
+    show_line <- paste("...",format(nsnps-nsnps_new,big.mark=",")," SNPs were deleted based on OR>2 or OR<0.5" ,sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
     nsnps<-nsnps_new
 
     ## estimate z-value
     if( {"SE" %in% colnames(stats)}==FALSE ){
       n_Pis0<-length(which(stats$pval < 10e-310))
-      show_line <- paste("...SE of log(OR) not available, z-values based on P-values (",n_Pis0," SNPs have P<10e-310: these SNPs are deleted as no z-value can be computed, provide SE to retain these SNPs)",sep=""); cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))
+      show_line <- paste("...SE of log(OR) not available, z-values based on P-values (",n_Pis0," SNPs have P<10e-310: these SNPs are deleted as no z-value can be computed, provide SE to retain these SNPs)",sep=""); cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
       stats <- stats[stats$pval>=10e-310,]
       stats$z<- -qnorm(stats$pval/2,0,1)*sign(log(stats$OR)) 
     }
     if( {"SE" %in% colnames(stats)}==TRUE ){
-      show_line <- paste("...SE is available, z-values based on log(OR)/SE",sep=""); cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))
+      show_line <- paste("...SE is available, z-values based on log(OR)/SE",sep=""); cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
       stats$z <- log(stats$OR)/stats$SE 
       stats$z[log(stats$OR)==0]<-0
     }
 
     ## Transpose data to beta from linear regression
-    show_line <- "...transposing ORs to observed scale betas (this may take some time)..." ; cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))
+    show_line <- "...transposing ORs to observed scale betas (this may take some time)..." ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
     f<-function(OR,pval,af){OR_to_scaled_linreg(OR=OR,pval=pval,AF=af)}
     stats$beta_viaOR <- t(mapply(FUN=f , stats$OR , stats$pval , stats$FRQ ))[,1]
     stats$se <- sqrt(1/stats$Neff) 
     stats$beta <- stats$z*stats$se
     temp_index <- { stats$OR<0.99 | stats$OR>1.01 }
     mean_ratio <- mean((stats$beta/stats$beta_viaOR)[temp_index])
-    show_line <- paste("...cor(beta,beta_viaOR) = ",round(cor(stats$beta,stats$beta_viaOR),digits=4)," (SHOULD BE CLOSE TO 1)",sep="") ; cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))
-    show_line <- paste("...mean(beta/beta_viaOR) = ",round(mean_ratio,digits=4)," for non-null SNPs with OR<0.99 | OR>1.01 (SHOULD BE CLOSE TO 1)",sep="") ; cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))
-    show_line <- paste("...resulting in ",format(nsnps_new,big.mark=",")," SNPs for ",comparison,sep="") ; cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))
+    show_line <- paste("...cor(beta,beta_viaOR) = ",round(cor(stats$beta,stats$beta_viaOR),digits=4)," (SHOULD BE CLOSE TO 1)",sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
+    show_line <- paste("...mean(beta/beta_viaOR) = ",round(mean_ratio,digits=4)," for non-null SNPs with OR<0.99 | OR>1.01 (SHOULD BE CLOSE TO 1)",sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
+    show_line <- paste("...resulting in ",format(nsnps_new,big.mark=",")," SNPs for ",comparison,sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
     colnames(stats)<-paste(comparison,"_",colnames(stats),sep="")
     assign(paste("stats_",comparison,sep=""),stats) ; rm(stats)
   }
@@ -210,20 +206,20 @@ CCGWAS <- function( outcome_file , A_name , B_name , sumstats_fileA1A0 , sumstat
 ## Merge A1A0 with B1B0 (and with A1B1, when available)
 ###########################
 
-  show_line <- ""; cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))
-  show_line <- "Merging data based on SNP-names, yielding..."; cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))
+  show_line <- ""; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
+  show_line <- "Merging data based on SNP-names, yielding..."; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
   stats <- merge(stats_A1A0,stats_B1B0,by.x="A1A0_SNP",by.y="B1B0_SNP",all=FALSE) 
   if(include_A1B1==TRUE){
     stats<-merge(stats,stats_A1B1,by.x="A1A0_SNP",by.y="A1B1_SNP",all=FALSE)
   }
   nsnps<-dim(stats)[1]
-  show_line <- paste("...",format(nsnps,big.mark=",")," overlapping SNPs across ",paste(comparisons,collapse=" & ") ,sep=""); cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))
+  show_line <- paste("...",format(nsnps,big.mark=",")," overlapping SNPs across ",paste(comparisons,collapse=" & ") ,sep=""); cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
 
   stats <- stats[{stats$A1A0_CHR==stats$B1B0_CHR & stats$A1A0_BP==stats$B1B0_BP},] ; nsnps_new<-dim(stats)[1]
   if(include_A1B1==TRUE){
     stats[{stats$A1A0_CHR==stats$A1B1_CHR & stats$A1A0_BP==stats$A1B1_BP},] ; nsnps_new<-dim(stats)[1]
   }    
-  show_line <- paste("...",format(nsnps-nsnps_new,big.mark=",")," SNPs were deleted based on discordant CHR or BP position" ,sep="") ; cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))
+  show_line <- paste("...",format(nsnps-nsnps_new,big.mark=",")," SNPs were deleted based on discordant CHR or BP position" ,sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
   nsnps <- nsnps_new
 
   ## delete non-matching allele names
@@ -232,7 +228,7 @@ CCGWAS <- function( outcome_file , A_name , B_name , sumstats_fileA1A0 , sumstat
     stats<-stats[ { {stats$A1A0_EA!=stats$A1B1_EA & stats$A1A0_EA!=stats$A1B1_NEA} | {stats$A1A0_NEA!=stats$A1B1_EA & stats$A1A0_NEA!=stats$A1B1_NEA} }==FALSE,]  
   }        
   nsnps_new<-dim(stats)[1]
-  show_line <- paste("...",format(nsnps-nsnps_new,big.mark=",")," SNPs were deleted based on difference in allele names" ,sep="") ; cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))
+  show_line <- paste("...",format(nsnps-nsnps_new,big.mark=",")," SNPs were deleted based on difference in allele names" ,sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
   nsnps<-nsnps_new
 
   ## allign reference alleles
@@ -245,7 +241,7 @@ CCGWAS <- function( outcome_file , A_name , B_name , sumstats_fileA1A0 , sumstat
   stats$B1B0_beta_viaOR[alleles_swapped]   <- -1*stats$B1B0_beta_viaOR[alleles_swapped]
   stats$B1B0_beta[alleles_swapped] <- -1*stats$B1B0_beta[alleles_swapped]
   temp_count <- length(which( alleles_swapped ))
-  show_line <- paste("...alligned reference alleles (changed reference allele in B1B0 to match A1A0 for ",format(temp_count,big.mark=",")," SNPs)" ,sep="") ; cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))
+  show_line <- paste("...alligned reference alleles (changed reference allele in B1B0 to match A1A0 for ",format(temp_count,big.mark=",")," SNPs)" ,sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
   if(include_A1B1==TRUE){
     alleles_swapped <- stats$A1A0_EA!=stats$A1B1_EA
     stats$A1B1_EA  <- stats$A1A0_EA
@@ -256,34 +252,34 @@ CCGWAS <- function( outcome_file , A_name , B_name , sumstats_fileA1A0 , sumstat
     stats$A1B1_beta_viaOR[alleles_swapped]   <- -1*stats$A1B1_beta_viaOR[alleles_swapped]
     stats$A1B1_beta[alleles_swapped] <- -1*stats$A1B1_beta[alleles_swapped]
     temp_count <- length(which( alleles_swapped ))
-    show_line <- paste("...(and, changed reference allele in A1B1 to match A1A0 for ",format(temp_count,big.mark=",")," SNPs)" ,sep="") ; cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))
+    show_line <- paste("...(and, changed reference allele in A1B1 to match A1A0 for ",format(temp_count,big.mark=",")," SNPs)" ,sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
   }        
 
   ## Delete strand ambiguous SNPs
   strand_ambiguous <- { {stats$A1A0_EA=="A" & stats$A1A0_NEA=="T"} | {stats$A1A0_EA=="C" & stats$A1A0_NEA=="G"} } | { {stats$A1A0_NEA=="A" & stats$A1A0_EA=="T"} | {stats$A1A0_NEA=="C" & stats$A1A0_EA=="G"} }
   stats<-stats[strand_ambiguous==FALSE,] 
-  show_line <- paste("...Deleted all ",format(length(which(strand_ambiguous)),big.mark=",")," strand ambiguous SNPs, leaving ",format(dim(stats)[1],big.mark=","), " SNPs for analyses" ,sep="") ; cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))
+  show_line <- paste("...Deleted all ",format(length(which(strand_ambiguous)),big.mark=",")," strand ambiguous SNPs, leaving ",format(dim(stats)[1],big.mark=","), " SNPs for analyses" ,sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
 
   ## Include some double-checks
-  show_line <- ""; cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))
-  show_line <- "Of these overlapping SNPs... (this overview can help to double-check input)"; cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))
+  show_line <- ""; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
+  show_line <- "Of these overlapping SNPs... (this overview can help to double-check input)"; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
   for(comparison in comparisons){
     meanOR<-round(mean(stats[,paste(comparison,"_OR",sep="")]),digits=5)
-    show_line <- paste("...the mean OR in ",comparison," equals ",meanOR," (should be very close to 1)",sep="") ; cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))
+    show_line <- paste("...the mean OR in ",comparison," equals ",meanOR," (should be very close to 1)",sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
   }
   for(comparison in comparisons){
     Nsignif<-length(which(stats[,paste(comparison,"_pval",sep="")]<5e-8))
-    show_line <- paste("...",format(Nsignif,big.mark=",")," are signifacntly associated with ",comparison," at p<5e-8",sep="") ; cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))
+    show_line <- paste("...",format(Nsignif,big.mark=",")," are signifacntly associated with ",comparison," at p<5e-8",sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
   }
   for(comparison in comparisons){
     meanFRQ<-round(mean(stats[,paste(comparison,"_FRQ",sep="")]),digits=5)
-    show_line <- paste("...the mean allele frequency in ",comparison," equals ",meanFRQ,sep="") ; cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))
+    show_line <- paste("...the mean allele frequency in ",comparison," equals ",meanFRQ,sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
   }
   cor_FRQ <- round(cor(stats[,paste("A1A0","_FRQ",sep="")],stats[,paste("B1B0","_FRQ",sep="")]),digits=5)
-  show_line <- paste("...the correlation between the allele frequencies in A1A0 and B1B0 is ",cor_FRQ," (should be very close to 1, i.e. > 0.98)",sep="") ; cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))
+  show_line <- paste("...the correlation between the allele frequencies in A1A0 and B1B0 is ",cor_FRQ," (should be very close to 1, i.e. > 0.98)",sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
   if(include_A1B1==TRUE){
     cor_FRQ <- round(cor(stats[,paste("A1A0","_FRQ",sep="")],stats[,paste("A1B1","_FRQ",sep="")]),digits=5)
-    show_line <- paste("...the correlation between the allele frequencies in A1A0 and A1B1 is ",cor_FRQ," (should be very close to 1, i.e. > 0.98)",sep="") ; cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))
+    show_line <- paste("...the correlation between the allele frequencies in A1A0 and A1B1 is ",cor_FRQ," (should be very close to 1, i.e. > 0.98)",sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
   }
 
   temp<-c("_Neff","_OR","_z","_se","_beta","_pval","_FRQ")
@@ -297,8 +293,8 @@ CCGWAS <- function( outcome_file , A_name , B_name , sumstats_fileA1A0 , sumstat
 ## Plotting Fst 
 ###########################
 
-  show_line <- "" ; cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))
-  show_line <- paste("Plot of F_ST,causal (see paper for details) saved to ",file_Fst,sep="") ; cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))
+  show_line <- "" ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
+  show_line <- paste("Plot of F_ST,causal (see paper for details) saved to ",file_Fst,sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
   
   Fst<-get_Fst(h2l_A=h2l_A1A0,K_A=K_A1A0,h2l_B=h2l_B1B0,K_B=K_B1B0,rg_AB=rg_A1A0_B1B0,m=m,show_info=FALSE)
   d<-data.frame(array(NA,dim=c(1,0)))
@@ -374,12 +370,12 @@ CCGWAS <- function( outcome_file , A_name , B_name , sumstats_fileA1A0 , sumstat
   th_intercept_A1A0_B1B0  <- { N_overlap_A0B0/(4*N_A0*N_B0) } /{sqrt((1/(4*N_A1)) + (1/(4*N_A0))) * sqrt((1/(4*N_B1)) + (1/(4*N_B0))) } 
   intercept_A1A0_B1B0 <- round(min(emp_intercept_A1A0_B1B0,th_intercept_A1A0_B1B0),digits=4)
   if(is.na(intercept_A1A0_B1B0)){intercept_A1A0_B1B0<-0}
-  show_line <- "" ; cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))
-  show_line <- "Results may suffer from type I error when the bivariate LDSC intercept would be inflated due to other causes than covariance of error terms" ; cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))
-  show_line <- "...therefore, take the minumum of the analytically expected and LDSC estimated value" ; cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))
-  show_line <- paste("...LDSC estimated value = ",emp_intercept_A1A0_B1B0,sep="") ; cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))
-  show_line <- paste("...Analytically expected = ",round(th_intercept_A1A0_B1B0,digits=4)," (based on confirmed N_overlap_A0B0 = ",format(N_overlap_A0B0,big.mark=","),")",sep="") ; cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))
-  show_line <- paste("...Thus, covariance of error terms is modelled based on an intercept of ",intercept_A1A0_B1B0,sep="") ; cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))
+  show_line <- "" ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
+  show_line <- "Results may suffer from type I error when the bivariate LDSC intercept would be inflated due to other causes than covariance of error terms" ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
+  show_line <- "...therefore, take the minumum of the analytically expected and LDSC estimated value" ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
+  show_line <- paste("...LDSC estimated value = ",emp_intercept_A1A0_B1B0,sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
+  show_line <- paste("...Analytically expected = ",round(th_intercept_A1A0_B1B0,digits=4)," (based on confirmed N_overlap_A0B0 = ",format(N_overlap_A0B0,big.mark=","),")",sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
+  show_line <- paste("...Thus, covariance of error terms is modelled based on an intercept of ",intercept_A1A0_B1B0,sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
   
 ###########################
 ## Get OLS and Exact weights
@@ -426,25 +422,25 @@ CCGWAS <- function( outcome_file , A_name , B_name , sumstats_fileA1A0 , sumstat
     weights_Exactplus  <- c(0,0,1)                    ; names(weights_Exactplus )<-c("A1A0","B1B0","A1B1")
   }
 
-  show_line <- "" ; cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))
-  show_line <- "Weights applied in CC-GWAS..." ; cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))
+  show_line <- "" ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
+  show_line <- "Weights applied in CC-GWAS..." ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
   if(include_A1B1==FALSE){
-    show_line <- paste("...weigths OLS component at p-threshold ",p_th_step1,sep="") ; cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))
+    show_line <- paste("...weigths OLS component at p-threshold ",p_th_step1,sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
     show_matrix <-  format(rbind(weights_OLS) ,scientific=TRUE, digits=3,trim=TRUE) ; show(show_matrix) ; add_matrix_to_logfile(show_matrix,print_rownames=FALSE)
-    show_line <- paste("...weigths Exact component at p-threshold ",p_th_step2,sep="") ; cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))
+    show_line <- paste("...weigths Exact component at p-threshold ",p_th_step2,sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
     if( subtype_data==TRUE ){
       weights_Exact<-c(1,-1) ; names(weights_Exact)<-c("A1A0","B1B0")
-      show_line <- "...Note that because subtype data are analyzed, Exact weights are replaced by delta weights" ; cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))    
+      show_line <- "...Note that because subtype data are analyzed, Exact weights are replaced by delta weights" ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)    
     }
     show_matrix <-  format(rbind(weights_Exact) ,scientific=TRUE, digits=3,trim=TRUE) ; show(show_matrix) ; add_matrix_to_logfile(show_matrix,print_rownames=FALSE)
-    show_line <- "" ; cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))
+    show_line <- "" ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
   }  
   if(include_A1B1==TRUE){
-    show_line <- paste("...weigths OLS+ component at p-threshold ",p_th_step1,sep="") ; cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))
+    show_line <- paste("...weigths OLS+ component at p-threshold ",p_th_step1,sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
     show_matrix <-  format(rbind(weights_OLSplus) ,scientific=TRUE, digits=3,trim=TRUE) ; show(show_matrix) ; add_matrix_to_logfile(show_matrix,print_rownames=FALSE)
-    show_line <- paste("...weigths Exact+ component at p-threshold ",p_th_step2,sep="") ; cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))
+    show_line <- paste("...weigths Exact+ component at p-threshold ",p_th_step2,sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
     show_matrix <-  format(rbind(weights_Exactplus) ,scientific=TRUE, digits=3,trim=TRUE) ; show(show_matrix) ; add_matrix_to_logfile(show_matrix,print_rownames=FALSE)
-    show_line <- "" ; cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))
+    show_line <- "" ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
   }
 
 ###########################
@@ -460,7 +456,7 @@ CCGWAS <- function( outcome_file , A_name , B_name , sumstats_fileA1A0 , sumstat
   weights_Exact_hl<-c((1-K_A1A0_high),-(1-K_B1B0_low )) ; names(weights_Exact_hl)<-c("A1A0","B1B0")
   weights_Exact_hh<-c((1-K_A1A0_high),-(1-K_B1B0_high)) ; names(weights_Exact_hh)<-c("A1A0","B1B0")
 
-  show_line <- "Applying CC-GWAS to identify candidate CC-GWAS SNPs..." ; cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))
+  show_line <- "Applying CC-GWAS to identify candidate CC-GWAS SNPs..." ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
   if(include_A1B1==FALSE){
     for(step in c("OLS","Exact","Exact_ll","Exact_lh","Exact_hl","Exact_hh")){
       weights<-get(paste("weights_",step,sep=""))
@@ -496,8 +492,8 @@ CCGWAS <- function( outcome_file , A_name , B_name , sumstats_fileA1A0 , sumstat
 ## Select significant associations & and screen for potential tagging issues
 ###########################
 
-  show_line <- "" ; cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))
-  show_line <- "Screening candidate CC-GWAS SNPs for potential false-positive association (this may take some time)..." ; cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))
+  show_line <- "" ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
+  show_line <- "Screening candidate CC-GWAS SNPs for potential false-positive association (this may take some time)..." ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
   for(comparison in comparisons){
     stats[,paste("sig_",comparison,sep="")] <- 0 
     stats[ {stats[,paste(comparison,"_pval",sep="")] < p_th_step1 } ,paste("sig_",comparison,sep="")] <- 1
@@ -599,13 +595,13 @@ CCGWAS <- function( outcome_file , A_name , B_name , sumstats_fileA1A0 , sumstat
 
   n_candidate <- length(which(is.na(stats$potential_tagging_stresstest)==FALSE))
   n_filtered_tagging <- sum(na.omit(stats$potential_tagging_stresstest))
-  show_line <- paste("...",n_filtered_tagging," of ",n_candidate," candidate CC-GWAS SNPs were filtered as potentially due to differential tagging",sep="") ; cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))
+  show_line <- paste("...",n_filtered_tagging," of ",n_candidate," candidate CC-GWAS SNPs were filtered as potentially due to differential tagging",sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
 
   if(include_A1B1==FALSE){
     n_filtered_vary.K <- length(which(is.na(stats$sig_nm2_vary.K!=1 & stats$sig_nm2==1 & stats$potential_tagging_stresstest==0)))
-    show_line <- paste("...",n_filtered_vary.K ," of ",n_candidate-n_filtered_tagging," remaining candidate CC-GWAS SNPs were filtered by applying a range of disorder prevalences instead of only the most likely disorder prevalence",sep="") ; cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))
+    show_line <- paste("...",n_filtered_vary.K ," of ",n_candidate-n_filtered_tagging," remaining candidate CC-GWAS SNPs were filtered by applying a range of disorder prevalences instead of only the most likely disorder prevalence",sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
   }
-  show_line <- "" ; cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))
+  show_line <- "" ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
 
 ###########################
 ## Saving results
@@ -629,17 +625,17 @@ CCGWAS <- function( outcome_file , A_name , B_name , sumstats_fileA1A0 , sumstat
     keep <- c("SNP","CHR","BP","EA","NEA",cols,"CCGWAS_signif")
   }
   stats <- stats[order(stats$CHR,stats$BP),]
-  show_line <- paste("Of ",format(dim(stats)[1],big.mark=","), " SNPs tested, " , format(sum(stats$CCGWAS_signif),big.mark=",")," are significantly associated with case-case status (labelled as 1 in CCGWAS_signif column in outcome).",sep="") ; cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))
+  show_line <- paste("Of ",format(dim(stats)[1],big.mark=","), " SNPs tested, " , format(sum(stats$CCGWAS_signif),big.mark=",")," are significantly associated with case-case status (labelled as 1 in CCGWAS_signif column in outcome).",sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
   fwrite(stats[,keep],file=paste(file_outcome,".gz",sep=""),col.names=TRUE,na="NA" ,row.names=FALSE,quote=FALSE,sep="\t")
-  show_line <- paste("Saving results to ",file_outcome,".gz...",sep="") ; cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))
+  show_line <- paste("Saving results to ",file_outcome,".gz...",sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
 
 ###########################
 ## End
 ###########################
 
-  show_line <- "" ; cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))
+  show_line <- "" ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
   end <- Sys.time()
-  show_line <- paste("Analyses ended at ", end ,sep=""); cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))
-  show_line <- paste("(Duration  ", round(as.numeric(difftime(end, start , units="mins")),digits=1) ," minutes)", sep=""); cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))
+  show_line <- paste("Analyses ended at ", end ,sep=""); cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
+  show_line <- paste("(Duration  ", round(as.numeric(difftime(end, start , units="mins")),digits=1) ," minutes)", sep=""); cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
 }
 
