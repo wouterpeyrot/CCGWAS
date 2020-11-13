@@ -9,14 +9,8 @@ Install the `CCGWAS` R Package as follows:
 ```[r]
 library(MASS)
 library(data.table)
-``` 
-```[r]
 library(devtools)
-``` 
-```[r]
 install_github("wouterpeyrot/CCGWAS")
-``` 
-```[r]
 library(CCGWAS)
 ``` 
 
