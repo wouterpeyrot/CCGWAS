@@ -16,7 +16,7 @@ library(CCGWAS)
 
 If the R Packages *MASS*, *data.table* or *devtools* have not been installed in R, you can install them with the R command: `install.packages("...")`.
 
-## Running `CCGWAS`
+## Running `CC-GWAS`
 
 The `CCGWAS` R Package contains one function `CCGWAS()`. The input arguments of `CCGWAS()` are:
 
@@ -55,6 +55,7 @@ The `CCGWAS` R Package contains one function `CCGWAS()`. The input arguments of 
 * **intercept_A1A0_A1B1/intercept_B1B0_A1B1:** set to `NA` when applying CC-GWAS based on case-control GWAS results only. When applying CC-GWAS+, provide here the intercept from cross-trait LD score regression of A1A0 vs A1B1 respectively B1B0 vs A1B1 (Bulik-Sullivan et al. 2015B Nature Genetics; PMID: 26414676)
 
 ## Output files
+
 The `CCGWAS()` function provides three output files. The `outcome_file.log` file provides a logfile of the analyses. This file also reports the CC-GWAS<sub>OLS</sub> weights and the CC-GWAS<sub>Exact</sub> weights. The `outcome_file.pdf` file provides a plot of the genetic distances between cases and controls of both disorders in terms of F<sub>ST,causal</sub>. The `outcome_file.results.gz` file reports results of the case-case association analyses. SNPs with significant case-case association are labelled as 1 in the **CCGWAS_signif** column. The other columns are
 
 * **SNP, CHR, BP, EA, NEA:** as in the input case-control GWAS files.
@@ -71,10 +72,36 @@ The `CCGWAS()` function provides three output files. The `outcome_file.log` file
 
 * **CCGWAS_signif:** labels SNPs with significant case-case association as `1` (i.e. passing the required levels of significance for the OLS_pval, Exact_pval, Exact_ll_pval, Exact_lh_pval, Exact_hl_pval and Exact_hh_pval, without suggestive evidence for differential tagging of a nearby stress test SNP), and other SNPs as `0`. 
 
+## Preparing `CC-GWAS` results for follow-up analyses
+
+The `CCGWAS()` function saves detailed results for all SNPs in `outcome_file.results.gz`. We advise to (i) remove all SNPs that should be excluded based on the CC-GWAS<sub>Exact</sub> component and the filtering step to exclude potential false positive associations due to differential tagging of a causal stress test SNP, and (ii) resrtict to only the necessary columns for follow-up analyses.
+
+```[r]
+library(data.table)
+d <- as.data.frame(fread(cmd="zless outcome_file.results.gz",header=TRUE))
+d <- d[ {d$OLS_pval<5e-8 & d$CCGWAS_signif==0}==FALSE ,] ## step (i)
+d <- d[,c("SNP","CHR","BP","EA","NEA","OLS_beta","OLS_se","OLS_pval","Exact_beta","Exact_se","Exact_pval","CCGWAS_signif")] ## step (ii): reduces number of columns from 23 to 12
+fwrite(d,file="outcome_file.results.trimmed",col.names=TRUE,na="NA" ,row.names=FALSE,quote=FALSE,sep="\t")
+system("gzip -9 outcome_file.results.trimmed")
+``` 
+
+We advise to use the results from the CC-GWAS<sub>OLS</sub> component (OLS_beta,OLS_se,OLS_pval) for clumping and for polygenic risk score analyses. We advise to use the results from the CC-GWAS<sub>Exact</sub> component (Exact_beta,Exact_se,Exact_pval) for genetic correlation analyses.
+
 ## Running the example in the *test* folder 
 
-Place the `CC-GWAS.R`, `CC-GWAS-parameters_test.txt`, `test.casecontrol.gwas.BIP.10snps.txt.gz`, and `test.casecontrol.gwas.SCZ.10snps.txt.gz` files in the same folder and run `CC-GWAS` with  
+Download the `test.casecontrol.gwas.BIP.10snps.txt.gz`, and `test.casecontrol.gwas.SCZ.10snps.txt.gz` files from the *test* folder and place in your working directory. Run the `CCGWAS()` function with:
 
-`R --no-save --args CC-GWAS-parameters_test.txt < CC-GWAS.R`
+```[r]
+library(MASS)
+library(data.table)
+library(CCGWAS)
+CCGWAS( outcome_file = "test.out" , A_name = "SCZ" , B_name = "BIP" , 
+        sumstats_fileA1A0 = "./test.casecontrol.gwas.SCZ.10snps.txt.gz" ,
+        sumstats_fileB1B0 = "./test.casecontrol.gwas.BIP.10snps.txt.gz" ,
+        K_A1A0 = 0.004 , K_A1A0_high = 0.01 , K_A1A0_low = 0.004 ,  
+        K_B1B0 = 0.01 , K_B1B0_high = 0.005 , K_B1B0_low = 0.02 , 
+        h2l_A1A0 = 0.2 , h2l_B1B0 = 0.20 , rg_A1A0_B1B0 = 0.70 , intercept_A1A0_B1B0 = 0.2425 , m = 1e4 ,  
+        N_A1 = 40675 , N_B1 = 4819 , N_A0 = 20352 , N_B0 = 31358 , N_overlap_A0B0 = 24265 )
+``` 
 
 This provides the results for 10 SNPs from the schizophrenia (SCZ) vs bipolar disorder (BIP) case-case comparison, described in detail in Peyrot & Price. 2020 bioRxiv.
