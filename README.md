@@ -1,6 +1,6 @@
 # Running CC-GWAS
 
-The `CCGWAS` R Package provides a tool for case-case association testing based on the case-control GWAS results of two different disorders. The CC-GWAS method is described in detail in Peyrot & Price. 2020 bioRxiv. If you have any questions or suggestions for improvement, please do not hesitate to contact us at: peyrot.w@gmail.com.
+The `CCGWAS` R Package provides a tool for case-case association testing of two different disorders based on their respective case-control GWAS results. The CC-GWAS method is described in detail in Peyrot & Price. 2020 bioRxiv. If you have any questions or suggestions for improvement, please let us know at: peyrot.w@gmail.com.
 
 ## Getting Started
 
