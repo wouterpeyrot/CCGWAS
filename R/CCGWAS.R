@@ -1,6 +1,3 @@
-library(MASS)
-library(data.table)
-
 CCGWAS <- function( outcome_file , A_name , B_name , sumstats_fileA1A0 , sumstats_fileB1B0 , K_A1A0 , K_A1A0_high , K_A1A0_low , K_B1B0 , K_B1B0_high ,K_B1B0_low ,
                     h2l_A1A0 , h2l_B1B0 , rg_A1A0_B1B0 , intercept_A1A0_B1B0 , m , N_A1 , N_B1 , N_A0 , N_B0 , N_overlap_A0B0 ,
                     subtype_data=FALSE , sumstats_fileA1B1=NA , N_A1_inA1B1= NA , N_B1_inA1B1=NA , intercept_A1A0_A1B1 =NA , intercept_B1B0_A1B1=NA ){
@@ -146,7 +143,7 @@ CCGWAS <- function( outcome_file , A_name , B_name , sumstats_fileA1A0 , sumstat
     show_line <- "" ; cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))
     sumstats_file <- get(paste("sumstats_file",comparison,sep=""))
     if( {is.na(sumstats_file) || file.exists(sumstats_file)==FALSE}  ){stop(paste("File of ",comparison," comparison not found",sep=""))}
-    stats <-as.data.frame(fread(cmd=paste("zless ",sumstats_file,"",sep=""),header=TRUE,na.strings=c("NA","")))
+    stats <-as.data.frame(fread(sumstats_file,header=TRUE,na.strings=c("NA","")))
     colnames <- c("SNP", "CHR","BP","EA","NEA","FRQ","OR","P","Neff")
     if( length(which(colnames %in% colnames(stats)))!=length(colnames) ){stop(paste("Double-check column names of ",comparison,sep=""))}
     if( "SE" %in% colnames(stats)){ colnames<-c("SNP", "CHR","BP","EA","NEA","FRQ","OR","SE","P","Neff") }
@@ -633,8 +630,7 @@ CCGWAS <- function( outcome_file , A_name , B_name , sumstats_fileA1A0 , sumstat
   }
   stats <- stats[order(stats$CHR,stats$BP),]
   show_line <- paste("Of ",format(dim(stats)[1],big.mark=","), " SNPs tested, " , format(sum(stats$CCGWAS_signif),big.mark=",")," are significantly associated with case-case status (labelled as 1 in CCGWAS_signif column in outcome).",sep="") ; cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))
-  fwrite(stats[,keep],file=file_outcome,col.names=TRUE,na="NA" ,row.names=FALSE,quote=FALSE,sep="\t")
-  system(paste("gzip -f -9",file_outcome))
+  fwrite(stats[,keep],file=paste("file_outcome",".gz",sep=""),col.names=TRUE,na="NA" ,row.names=FALSE,quote=FALSE,sep="\t")
   show_line <- paste("Saving results to ",file_outcome,".gz...",sep="") ; cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))
 
 ###########################
