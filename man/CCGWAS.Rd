@@ -19,7 +19,7 @@ CCGWAS( outcome_file , A_name , B_name , sumstats_fileA1A0 , sumstats_fileB1B0 ,
    \item{h2l_A1A0/h2l_B1B0}{SNP-based heritability on the liability scale.}
    \item{rg_A1A0_B1B0}{Genetic correlation between disorders A and B.}
    \item{intercept_A1A0_B1B0}{Intercept from cross-trait LD score regression. }
-   \item{m:}{Approximation of number of independent effective loci. }
+   \item{m}{Approximation of number of independent effective loci. }
    \item{N_A1/N_B1}{Total number of cases in the respective input case-control GWAS. }
    \item{N_A0/N_B0}{Total number of controls in the respective input case-control GWAS.} 
    \item{N_overlap_A0B0}{Confirmed number of overlapping controls between the A1A0 and B1B0 GWAS samples. }
