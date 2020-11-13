@@ -630,7 +630,7 @@ CCGWAS <- function( outcome_file , A_name , B_name , sumstats_fileA1A0 , sumstat
   }
   stats <- stats[order(stats$CHR,stats$BP),]
   show_line <- paste("Of ",format(dim(stats)[1],big.mark=","), " SNPs tested, " , format(sum(stats$CCGWAS_signif),big.mark=",")," are significantly associated with case-case status (labelled as 1 in CCGWAS_signif column in outcome).",sep="") ; cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))
-  fwrite(stats[,keep],file=paste("file_outcome",".gz",sep=""),col.names=TRUE,na="NA" ,row.names=FALSE,quote=FALSE,sep="\t")
+  fwrite(stats[,keep],file=paste(file_outcome,".gz",sep=""),col.names=TRUE,na="NA" ,row.names=FALSE,quote=FALSE,sep="\t")
   show_line <- paste("Saving results to ",file_outcome,".gz...",sep="") ; cat(show_line,"\n") ; system(paste("echo '",show_line,"' >> ",file_log,sep=""))
 
 ###########################
