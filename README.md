@@ -85,7 +85,7 @@ fwrite(d,file="outcome_file.results.trimmed",col.names=TRUE,na="NA" ,row.names=F
 system("gzip -9 outcome_file.results.trimmed")
 ``` 
 
-We advise to use the results from the CC-GWAS<sub>OLS</sub> component (OLS_beta,OLS_se,OLS_pval) for clumping and for polygenic risk score analyses. We advise to use the results from the CC-GWAS<sub>Exact</sub> component (Exact_beta,Exact_se,Exact_pval) for genetic correlation analyses.
+We advise to use the results from the CC-GWAS<sub>OLS</sub> component (OLS_beta, OLS_se, OLS_pval) for clumping and for polygenic risk score analyses. We advise to use the results from the CC-GWAS<sub>Exact</sub> component (Exact_beta, Exact_se, Exact_pval) for genetic correlation analyses.
 
 ## Running the example in the *test* folder 
 
