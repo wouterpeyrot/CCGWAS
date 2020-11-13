@@ -32,7 +32,7 @@ CCGWAS( outcome_file , A_name , B_name , sumstats_fileA1A0 , sumstats_fileB1B0 ,
 \value{
 The output consists of three output files. The `outcome_file.log` file provides a logfile of the analyses. This file also reports the CC-GWAS_OLS weights and the CC-GWAS_Exact weights. The `outcome_file.pdf` file provides a plot of the genetic distances between cases and controls of both disorders in terms of F_ST,causal. The `outcome_file.results.gz` file reports results of the case-case association analyses. SNPs with significant case-case association are labelled as 1 in the `CCGWAS_signif` column. See for more details: https://github.com/wouterpeyrot/CCGWAS. 
 
-Don't forget to process your results! See: https://github.com/wouterpeyrot/CCGWAS#preparing-cc-gwas-results-for-follow-up-analyses.
+Don't forget to prepare your results for follow-up analyses! See: https://github.com/wouterpeyrot/CCGWAS#preparing-cc-gwas-results-for-follow-up-analyses.
 }
 
 
