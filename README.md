@@ -1,10 +1,10 @@
 # Running CC-GWAS
 
-The `CCGWAS` R Package provides a tool for case-case association testing of two different disorders based on their respective case-control GWAS results. The CC-GWAS method is described in detail in Peyrot & Price. 2020 bioRxiv. If you have any questions or suggestions for improvement, please let us know at: peyrot.w@gmail.com.
+The `CCGWAS` R package provides a tool for case-case association testing of two different disorders based on their respective case-control GWAS results. The CC-GWAS method is described in detail in Peyrot & Price. 2020 bioRxiv. If you have any questions or suggestions for improvement, please let us know at: peyrot.w@gmail.com.
 
 ## Getting Started
 
-Install the `CCGWAS` R Package as follows:
+Install the `CCGWAS` R package as follows:
 
 ```[r]
 library(data.table)
@@ -14,11 +14,11 @@ install_github("wouterpeyrot/CCGWAS")
 library(CCGWAS)
 ``` 
 
-If the R Packages *data.table*, *R.utils* or *devtools* have not been installed in R, you can install them with the R command: `install.packages("...")`.
+If the R packages *data.table*, *R.utils* or *devtools* have not been installed in R, you can install them with the R command: `install.packages("...")`.
 
 ## Running `CC-GWAS`
 
-The `CCGWAS` R Package contains one function `CCGWAS()`. The input arguments of `CCGWAS()` are:
+The `CCGWAS` R package contains one function `CCGWAS()`. The input arguments of `CCGWAS()` are:
 
 * **outcome_file:** the name of the file where the outcome should be saved
 
