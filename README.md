@@ -18,7 +18,7 @@ If the R Packages *MASS*, *data.table* or *devtools* have not been installed in 
 
 ## Running `CCGWAS`
 
-The input parameters to be specified in `CC-GWAS-parameters.txt` are:
+The `CCGWAS` R Package contains one function `CCGWAS()`. The input arguments of `CCGWAS()` are:
 
 * **outcome_file:** the name of the file where the outcome should be saved
 
@@ -55,7 +55,7 @@ The input parameters to be specified in `CC-GWAS-parameters.txt` are:
 * **intercept_A1A0_A1B1/intercept_B1B0_A1B1:** set to `NA` when applying CC-GWAS based on case-control GWAS results only. When applying CC-GWAS+, provide here the intercept from cross-trait LD score regression of A1A0 vs A1B1 respectively B1B0 vs A1B1 (Bulik-Sullivan et al. 2015B Nature Genetics; PMID: 26414676)
 
 ## Output files
-The output of `CC-GWAS.R` consists of three output files. The `outcome_file.log` file provides a logfile of the analyses. This file also reports the CC-GWAS<sub>OLS</sub> weights and the CC-GWAS<sub>Exact</sub> weights. The `outcome_file.pdf` file provides a plot of the genetic distances between cases and controls of both disorders in terms of F<sub>ST,causal</sub>. The `outcome_file.results.gz` file reports results of the case-case association analyses. SNPs with significant case-case association are labelled as 1 in the **CCGWAS_signif** column. The other columns are
+The `CCGWAS()` function provides three output files. The `outcome_file.log` file provides a logfile of the analyses. This file also reports the CC-GWAS<sub>OLS</sub> weights and the CC-GWAS<sub>Exact</sub> weights. The `outcome_file.pdf` file provides a plot of the genetic distances between cases and controls of both disorders in terms of F<sub>ST,causal</sub>. The `outcome_file.results.gz` file reports results of the case-case association analyses. SNPs with significant case-case association are labelled as 1 in the **CCGWAS_signif** column. The other columns are
 
 * **SNP, CHR, BP, EA, NEA:** as in the input case-control GWAS files.
 
