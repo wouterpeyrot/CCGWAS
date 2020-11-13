@@ -1,0 +1,75 @@
+CC-GWAS
+
+Analyses started at 2020-11-13 09:44:24
+
+No information found of A1B1 comparison, CC-GWAS will be based on A1A0 and B1B0. Reading data...
+
+Read data of 10 SNPs for A1A0 from ./test.casecontrol.gwas.SCZ.10snps.txt.gz, of these...
+...0 SNPs were deleted based on missing value in at least one column (0%)
+...0 SNPs were deleted based on MAF<=0.01
+...0 SNPs were deleted with Neff < 2/3 of max(Neff)
+...0 duplicate SNPs were deleted 
+...maximum OR = 1.09, minimum OR = 0.93
+...0 SNPs were deleted based on OR>2 or OR<0.5
+...SE is available, z-values based on log(OR)/SE
+...transposing ORs to observed scale betas (this may take some time)...
+...cor(beta,beta_viaOR) = 0.9998 (SHOULD BE CLOSE TO 1)
+...mean(beta/beta_viaOR) = 0.9537 for non-null SNPs with OR<0.99 | OR>1.01 (SHOULD BE CLOSE TO 1)
+...resulting in 10 SNPs for A1A0
+
+Read data of 10 SNPs for B1B0 from ./test.casecontrol.gwas.BIP.10snps.txt.gz, of these...
+...0 SNPs were deleted based on missing value in at least one column (0%)
+...0 SNPs were deleted based on MAF<=0.01
+...0 SNPs were deleted with Neff < 2/3 of max(Neff)
+...0 duplicate SNPs were deleted 
+...maximum OR = 1.08, minimum OR = 0.95
+...0 SNPs were deleted based on OR>2 or OR<0.5
+...SE is available, z-values based on log(OR)/SE
+...transposing ORs to observed scale betas (this may take some time)...
+...cor(beta,beta_viaOR) = 1 (SHOULD BE CLOSE TO 1)
+...mean(beta/beta_viaOR) = 0.9779 for non-null SNPs with OR<0.99 | OR>1.01 (SHOULD BE CLOSE TO 1)
+...resulting in 10 SNPs for B1B0
+
+Merging data based on SNP-names, yielding...
+...10 overlapping SNPs across A1A0 & B1B0
+...0 SNPs were deleted based on discordant CHR or BP position
+...0 SNPs were deleted based on difference in allele names
+...alligned reference alleles (changed reference allele in B1B0 to match A1A0 for 0 SNPs)
+...Deleted all 0 strand ambiguous SNPs, leaving 10 SNPs for analyses
+
+Of these overlapping SNPs... (this overview can help to double-check input)
+...the mean OR in A1A0 equals 1.02496 (should be very close to 1)
+...the mean OR in B1B0 equals 1.02297 (should be very close to 1)
+...4 are signifacntly associated with A1A0 at p<5e-8
+...2 are signifacntly associated with B1B0 at p<5e-8
+...the mean allele frequency in A1A0 equals 0.2991
+...the mean allele frequency in B1B0 equals 0.30409
+...the correlation between the allele frequencies in A1A0 and B1B0 is 0.9964 (should be very close to 1, i.e. > 0.98)
+
+Plot of F_ST,causal (see paper for details) saved to test.out.Fst.pdf
+
+Results may suffer from type I error when the bivariate LDSC intercept would be inflated due to other causes than covariance of error terms
+...therefore, take the minumum of the analytically expected and LDSC estimated value
+...LDSC estimated value = 0.2425
+...Analytically expected = 0.2862 (based on confirmed N_overlap_A0B0 = 24,265)
+...Thus, covariance of error terms is modelled based on an intercept of 0.2425
+
+Weights applied in CC-GWAS...
+...weigths OLS component at p-threshold 5e-08
+A1A0       B1B0     
+5.52e-01   -4.41e-01
+...weigths Exact component at p-threshold 1e-04
+A1A0       B1B0     
+9.96e-01   -9.90e-01
+
+Applying CC-GWAS to identify candidate CC-GWAS SNPs...
+
+Screening candidate CC-GWAS SNPs for potential false-positive association (this may take some time)...
+...0 of 1 candidate CC-GWAS SNPs were filtered as potentially due to differential tagging
+...0 of 1 remaining candidate CC-GWAS SNPs were filtered by applying a range of disorder prevalences instead of only the most likely disorder prevalence
+
+Of 10 SNPs tested, 1 are significantly associated with case-case status (labelled as 1 in CCGWAS_signif column in outcome).
+Saving results to test.out.results.gz...
+
+Analyses ended at 2020-11-13 09:44:24
+(Duration  0 minutes)
