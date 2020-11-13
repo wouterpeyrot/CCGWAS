@@ -9,12 +9,13 @@ Install the `CCGWAS` R Package as follows:
 ```[r]
 library(MASS)
 library(data.table)
+library(R.utils)
 library(devtools)
 install_github("wouterpeyrot/CCGWAS")
 library(CCGWAS)
 ``` 
 
-If the R Packages *MASS*, *data.table* or *devtools* have not been installed in R, you can install them with the R command: `install.packages("...")`.
+If the R Packages *MASS*, *data.table*, *R.utils* or *devtools* have not been installed in R, you can install them with the R command: `install.packages("...")`.
 
 ## Running `CC-GWAS`
 
@@ -78,11 +79,10 @@ The `CCGWAS()` function saves detailed results for all SNPs in `outcome_file.res
 
 ```[r]
 library(data.table)
-d <- as.data.frame(fread(cmd="zless outcome_file.results.gz",header=TRUE))
+d <- as.data.frame(fread("outcome_file.results.gz",header=TRUE))
 d <- d[ {d$OLS_pval<5e-8 & d$CCGWAS_signif==0}==FALSE ,] ## step (i)
 d <- d[,c("SNP","CHR","BP","EA","NEA","OLS_beta","OLS_se","OLS_pval","Exact_beta","Exact_se","Exact_pval","CCGWAS_signif")] ## step (ii): reduces number of columns from 23 to 12
-fwrite(d,file="outcome_file.results.trimmed",col.names=TRUE,na="NA" ,row.names=FALSE,quote=FALSE,sep="\t")
-system("gzip -9 outcome_file.results.trimmed")
+fwrite(d,file="outcome_file.results.trimmed.gz",col.names=TRUE,na="NA" ,row.names=FALSE,quote=FALSE,sep="\t")
 ``` 
 
 We advise to use the results from the CC-GWAS<sub>OLS</sub> component (OLS_beta, OLS_se, OLS_pval) for clumping and for polygenic risk score analyses. We advise to use the results from the CC-GWAS<sub>Exact</sub> component (Exact_beta, Exact_se, Exact_pval) for genetic correlation analyses.
@@ -94,6 +94,7 @@ Download the `test.casecontrol.gwas.BIP.10snps.txt.gz`, and `test.casecontrol.gw
 ```[r]
 library(MASS)
 library(data.table)
+library(R.utils)
 library(CCGWAS)
 CCGWAS( outcome_file = "test.out" , A_name = "SCZ" , B_name = "BIP" , 
         sumstats_fileA1A0 = "./test.casecontrol.gwas.SCZ.10snps.txt.gz" ,
