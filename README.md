@@ -6,11 +6,21 @@
 
 Install the `CCGWAS` R Package as follows:
 
-* `library(MASS)` 
-* `library(data.table)` 
-* `library(devtools)` 
-* `install_github("wouterpeyrot/CCGWAS")` 
-* `library(CCGWAS)` 
+```[r]
+library(MASS)
+``` 
+```[r]
+library(data.table)
+``` 
+```[r]
+library(devtools)
+``` 
+```[r]
+install_github("wouterpeyrot/CCGWAS")
+``` 
+```[r]
+library(CCGWAS)
+``` 
 
 If the R Packages *MASS*, *data.table* or *devtools* have not been installed in R, you can install them with the R command: `install.packages("...")`.
 
