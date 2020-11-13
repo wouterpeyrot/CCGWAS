@@ -7,7 +7,6 @@ The `CCGWAS` R Package provides a tool for case-case association testing of two 
 Install the `CCGWAS` R Package as follows:
 
 ```[r]
-library(MASS)
 library(data.table)
 library(R.utils)
 library(devtools)
@@ -15,7 +14,7 @@ install_github("wouterpeyrot/CCGWAS")
 library(CCGWAS)
 ``` 
 
-If the R Packages *MASS*, *data.table*, *R.utils* or *devtools* have not been installed in R, you can install them with the R command: `install.packages("...")`.
+If the R Packages *data.table*, *R.utils* or *devtools* have not been installed in R, you can install them with the R command: `install.packages("...")`.
 
 ## Running `CC-GWAS`
 
@@ -92,7 +91,6 @@ We advise to use the results from the CC-GWAS<sub>OLS</sub> component (OLS_beta,
 Download the `test.casecontrol.gwas.BIP.10snps.txt.gz`, and `test.casecontrol.gwas.SCZ.10snps.txt.gz` files from the *test* folder and place in your working directory. Run the `CCGWAS()` function with:
 
 ```[r]
-library(MASS)
 library(data.table)
 library(R.utils)
 library(CCGWAS)
