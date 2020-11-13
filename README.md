@@ -78,6 +78,7 @@ The `CCGWAS()` function saves detailed results for all SNPs in `outcome_file.res
 
 ```[r]
 library(data.table)
+library(R.utils)
 d <- as.data.frame(fread("outcome_file.results.gz",header=TRUE))
 d <- d[ {d$OLS_pval<5e-8 & d$CCGWAS_signif==0}==FALSE ,] ## step (i)
 d <- d[,c("SNP","CHR","BP","EA","NEA","OLS_beta","OLS_se","OLS_pval","Exact_beta","Exact_se","Exact_pval","CCGWAS_signif")] ## step (ii): reduces number of columns from 23 to 12
