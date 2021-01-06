@@ -3,7 +3,7 @@ CCGWAS <- function( outcome_file , A_name , B_name , sumstats_fileA1A0 , sumstat
                     subtype_data=FALSE , sumstats_fileA1B1=NA , N_A1_inA1B1= NA , N_B1_inA1B1=NA , intercept_A1A0_A1B1 =NA , intercept_B1B0_A1B1=NA ){
 
   if(rg_A1A0_B1B0>0.8){stop("CC-GWAS is intended for comparing two different disorders with genetic correlation <0.8")}
-
+show("hello")
   file_outcome<-paste(outcome_file,".results",sep="")
   file_Fst<-paste(outcome_file,".Fst.pdf",sep="")
   file_log<-paste(outcome_file,".log",sep="")
