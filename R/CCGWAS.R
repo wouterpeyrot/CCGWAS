@@ -3,7 +3,7 @@ CCGWAS <- function( outcome_file , A_name , B_name , sumstats_fileA1A0 , sumstat
                     subtype_data=FALSE , sumstats_fileA1B1=NA , N_A1_inA1B1= NA , N_B1_inA1B1=NA , intercept_A1A0_A1B1 =NA , intercept_B1B0_A1B1=NA ){
 
   if(rg_A1A0_B1B0>0.8){stop("CC-GWAS is intended for comparing two different disorders with genetic correlation <0.8")}
-show("hello")
+
   file_outcome<-paste(outcome_file,".results",sep="")
   file_Fst<-paste(outcome_file,".Fst.pdf",sep="")
   file_log<-paste(outcome_file,".log",sep="")
@@ -198,6 +198,10 @@ show("hello")
     mean_ratio <- mean((stats$beta/stats$beta_viaOR)[temp_index])
     show_line <- paste("...cor(beta,beta_viaOR) = ",round(cor(stats$beta,stats$beta_viaOR),digits=4)," (SHOULD BE CLOSE TO 1)",sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
     show_line <- paste("...mean(beta/beta_viaOR) = ",round(mean_ratio,digits=4)," for non-null SNPs with OR<0.99 | OR>1.01 (SHOULD BE CLOSE TO 1)",sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
+    if(mean_ratio>1.1 || mean_ratio <0.1){
+      show_line <- paste("...CC-GWAS is being aborted, because mean(beta/beta_viaOR) = ",round(mean_ratio,digits=4)," > 1.1 or <0.9 risking inflated type I error at stress test SNPs. Please contact us to solve this discrepency.",sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
+      stop(show_line)
+    }
     show_line <- paste("...resulting in ",format(nsnps_new,big.mark=",")," SNPs for ",comparison,sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
     colnames(stats)<-paste(comparison,"_",colnames(stats),sep="")
     assign(paste("stats_",comparison,sep=""),stats) ; rm(stats)
