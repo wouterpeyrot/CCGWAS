@@ -81,7 +81,7 @@ The file `outcome_file.results.ALL.gz` may also contain SNPs with `OLS_pval<5e-8
 ```[r]
 library(data.table)
 d <- as.data.frame(fread("outcome_file.results.ALL.gz",header=TRUE))
-d <- d[ {d$OLS_pval<5e-8 & d$CCGWAS_signif==0}==FALSE ,] ## step (i)
+d <- d[ {d$OLS_pval<5e-8 & d$CCGWAS_signif==0}==FALSE ,] 
 ``` 
 
 ## Using `CC-GWAS` results for follow-up analyses
