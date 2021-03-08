@@ -54,7 +54,7 @@ The `CCGWAS` R package contains one function `CCGWAS()`. The input arguments of 
 
 * **intercept_A1A0_A1B1/intercept_B1B0_A1B1:** set to `NA` when applying CC-GWAS based on case-control GWAS results only. When applying CC-GWAS+, provide here the intercept from cross-trait LD score regression of A1A0 vs A1B1 respectively B1B0 vs A1B1 (Bulik-Sullivan et al. 2015B Nature Genetics; PMID: 26414676)
 
-* **save.all:** set to `FALSE` to save only the trimmed results that can directly be used for follow-up analyses like clumping. Set the `TRUE` to save all results, including information of all steps to protect against type I error; note that these results may include SNPs that should be removed to prevent type I error.
+* **save.all:** set to `FALSE` to save only the trimmed results that can directly be used for follow-up analyses (such as e.g. clumping). Set the `TRUE` to save all results, including information of all steps to protect against type I error; note that these results may include SNPs that should be removed to prevent type I error.
 
 ## Output files
 
