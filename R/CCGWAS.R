@@ -602,10 +602,24 @@ CCGWAS <- function( outcome_file , A_name , B_name , sumstats_fileA1A0 , sumstat
     } ## end for(chr in 1:22){
   }
 
+  ## print number of SNPs with p_OLS<5e-8 AND p_Exact >1e-4
+  if(include_A1B1==FALSE){
+    n_candidate <- length(which(stats$OLS_pval<5e-8))
+    n_filtered_Exact <- length(which(stats$OLS_pval<5e-8 & stats$Exact_pval>1e-4))
+    show_line <- paste("...",n_filtered_Exact," of ",n_candidate," SNPs with p.OLS<5e-8 were filtered filtered due to p.Exact>1e-4",sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
+  }
+  if(include_A1B1==TRUE){
+    n_candidate <- length(which(stats$OLSplus_pval<5e-8))
+    n_filtered_Exact <- length(which(stats$OLSplus_pval<5e-8 & stats$Exactplus_pval>1e-4))
+    show_line <- paste("...",n_filtered_Exact," of ",n_candidate," SNPs with p.OLS<5e-8 were filtered filtered due to p.Exact>1e-4",sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
+  }
+
+  ## print number of candidate SNPs with suggestive differential tagging
   n_candidate <- length(which(is.na(stats$potential_tagging_stresstest)==FALSE))
   n_filtered_tagging <- sum(na.omit(stats$potential_tagging_stresstest))
   show_line <- paste("...",n_filtered_tagging," of ",n_candidate," candidate CC-GWAS SNPs were filtered as potentially due to differential tagging",sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
 
+  ## print number of candidate SNPs excluded by setting range of input K's
   if(include_A1B1==FALSE){
     n_filtered_vary.K <- length(which(is.na(stats$sig_nm2_vary.K!=1 & stats$sig_nm2==1 & stats$potential_tagging_stresstest==0)))
     show_line <- paste("...",n_filtered_vary.K ," of ",n_candidate-n_filtered_tagging," remaining candidate CC-GWAS SNPs were filtered by applying a range of disorder prevalences instead of only the most likely disorder prevalence",sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
