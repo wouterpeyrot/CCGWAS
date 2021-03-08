@@ -54,36 +54,37 @@ The `CCGWAS` R package contains one function `CCGWAS()`. The input arguments of 
 
 * **intercept_A1A0_A1B1/intercept_B1B0_A1B1:** set to `NA` when applying CC-GWAS based on case-control GWAS results only. When applying CC-GWAS+, provide here the intercept from cross-trait LD score regression of A1A0 vs A1B1 respectively B1B0 vs A1B1 (Bulik-Sullivan et al. 2015B Nature Genetics; PMID: 26414676)
 
+* **save.all:** set to `FALSE` to save only the trimmed results that can directly be used for follow-up analyses like clumping. Set the `TRUE` to save all results, including information of all steps to protect against type I error; note that these results may include SNPs that should be removed to prevent type I error.
+
 ## Output files
 
 The `CCGWAS()` function provides three output files. The `outcome_file.log` file provides a logfile of the analyses. This file also reports the CC-GWAS<sub>OLS</sub> weights and the CC-GWAS<sub>Exact</sub> weights. The `outcome_file.pdf` file provides a plot of the genetic distances between cases and controls of both disorders in terms of F<sub>ST,causal</sub>. The `outcome_file.results.gz` file reports results of the case-case association analyses. SNPs with significant case-case association are labelled as 1 in the **CCGWAS_signif** column. The other columns are
 
 * **SNP, CHR, BP, EA, NEA:** as in the input case-control GWAS files.
 
-* **A1A0_beta, A1A0_se, A1A0_pval, B1B0_beta, B1B0_se, B1B0_pval:** case-control effects expressed on the standardized observed scale with a 50/50 case-control ascertainment. 
-
 * **OLS_beta, OLS_se, OLS_pval:** case-case association based on the CC-GWAS<sub>OLS</sub> component. The required level of significance of the CC-GWAS<sub>OLS</sub> component is 5x10<sup>-8</sup> (controlling type I error at null-null SNPs with no impact in either case-control comparison). 
 
 * **Exact_beta, Exact_se, Exact_pval:** case-case association based on the CC-GWAS<sub>Exact</sub> component (based on the most likely lifetime disorder prevalences; see above). The required level of significance of the CC-GWAS<sub>Exact</sub> component is 10<sup>-4</sup> (controlling type I error at stress test SNPs, i.e. shared causal SNPs with the same allele frequency in cases of both disorders). 
+
+* **CCGWAS_signif:** labels SNPs with significant case-case association as `1` (i.e. passing the required levels of significance for the OLS_pval, Exact_pval, Exact_ll_pval, Exact_lh_pval, Exact_hl_pval and Exact_hh_pval, without suggestive evidence for differential tagging of a nearby stress test SNP), and other SNPs as `0`. 
+
+When setting `save.all=TRUE` (see above), CC-GWAS additionally outputs a file `outcome_file.results.ALL.gz`. In addition to the output columns above, this file also contains the following columns:
+
+* **A1A0_beta, A1A0_se, A1A0_pval, B1B0_beta, B1B0_se, B1B0_pval:** case-control effects expressed on the standardized observed scale with a 50/50 case-control ascertainment. 
 
 * **potential_tagging_stresstest:** reports results of the filtering step to exclude potential false positive associations due to differential tagging of a causal stress test SNP (shared causal SNPs with the same allele frequency in cases of both disorders). `NA` when at least one of the CC-GWAS<sub>OLS</sub> component and the CC-GWAS<sub>Exact</sub> component does not reach its required level of significance. `0` when both the CC-GWAS<sub>OLS</sub> component and the CC-GWAS<sub>Exact</sub> component reach their required level of significance, without evidence for differential tagging of a nearby stress test SNP. `1` when both the CC-GWAS<sub>OLS</sub> component and the CC-GWAS<sub>Exact</sub> component reach their required level of significance, but with suggestive evidence for differential tagging of a nearby stress test SNP (these SNPs are excluded from the significant results). 
 
 * **Exact_ll_pval, Exact_lh_pval, Exact_hl_pval, Exact_hh_pval:** reports the p-values of perturbations of the CC-GWAS<sub>Exact</sub> component based on the specified ranges of the lifetime disorder prevalences (see above). *ll* corresponds to weights based on K_A1A0_low and K_B1B0_low (see above); *lh* is based on K_A1A0_low and K_B1B0_high; *hl* is based on K_A1A0_high and K_B1B0_low; *hh* is based on K_A1A0_high and K_B1B0_high. All of these p-values are required to pass the level of significance of 10<sup>-4</sup> to control type I error at stress test SNPs in the context of uncertainty about the population prevalences.
 
-* **CCGWAS_signif:** labels SNPs with significant case-case association as `1` (i.e. passing the required levels of significance for the OLS_pval, Exact_pval, Exact_ll_pval, Exact_lh_pval, Exact_hl_pval and Exact_hh_pval, without suggestive evidence for differential tagging of a nearby stress test SNP), and other SNPs as `0`. 
-
-## Preparing `CC-GWAS` results for follow-up analyses
-
-The `CCGWAS()` function saves detailed results for all SNPs in `outcome_file.results.gz`. We advise to (i) remove all SNPs that should be excluded based on the CC-GWAS<sub>Exact</sub> component and the filtering step to exclude potential false positive associations due to differential tagging of a causal stress test SNP, and (ii) restrict to only the necessary columns for follow-up analyses.
+The file `outcome_file.results.ALL.gz` may also contain SNPs with `OLS_pval<5e-8` that should be removed to protect against type I error (which are per default removed from `outcome_file.results.gz`). When wanting to work with `outcome_file.results.ALL.gz`, these SNPs can be removed in R with:
 
 ```[r]
 library(data.table)
-library(R.utils)
-d <- as.data.frame(fread("outcome_file.results.gz",header=TRUE))
+d <- as.data.frame(fread("outcome_file.results.ALL.gz",header=TRUE))
 d <- d[ {d$OLS_pval<5e-8 & d$CCGWAS_signif==0}==FALSE ,] ## step (i)
-d <- d[,c("SNP","CHR","BP","EA","NEA","OLS_beta","OLS_se","OLS_pval","Exact_beta","Exact_se","Exact_pval","CCGWAS_signif")] ## step (ii): reduces number of columns from 23 to 12
-fwrite(d,file="outcome_file.results.trimmed.gz",col.names=TRUE,na="NA" ,row.names=FALSE,quote=FALSE,sep="\t")
 ``` 
+
+## Using `CC-GWAS` results for follow-up analyses
 
 We advise to use the results from the CC-GWAS<sub>OLS</sub> component (OLS_beta, OLS_se, OLS_pval) for clumping and for polygenic risk score analyses. We advise to use the results from the CC-GWAS<sub>Exact</sub> component (Exact_beta, Exact_se, Exact_pval) for genetic correlation analyses.
 
