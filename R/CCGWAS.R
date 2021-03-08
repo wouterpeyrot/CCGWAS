@@ -606,12 +606,12 @@ CCGWAS <- function( outcome_file , A_name , B_name , sumstats_fileA1A0 , sumstat
   if(include_A1B1==FALSE){
     n_candidate <- length(which(stats$OLS_pval<5e-8))
     n_filtered_Exact <- length(which(stats$OLS_pval<5e-8 & stats$Exact_pval>1e-4))
-    show_line <- paste("...",n_filtered_Exact," of ",n_candidate," SNPs with p.OLS<5e-8 were filtered filtered due to p.Exact>1e-4",sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
+    show_line <- paste("...",n_filtered_Exact," of ",n_candidate," SNPs with p.OLS<5e-8 were filtered due to p.Exact>1e-4",sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
   }
   if(include_A1B1==TRUE){
     n_candidate <- length(which(stats$OLSplus_pval<5e-8))
     n_filtered_Exact <- length(which(stats$OLSplus_pval<5e-8 & stats$Exactplus_pval>1e-4))
-    show_line <- paste("...",n_filtered_Exact," of ",n_candidate," SNPs with p.OLS<5e-8 were filtered filtered due to p.Exact>1e-4",sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
+    show_line <- paste("...",n_filtered_Exact," of ",n_candidate," SNPs with p.OLS<5e-8 were filtered due to p.Exact>1e-4",sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
   }
 
   ## print number of candidate SNPs with suggestive differential tagging
