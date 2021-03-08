@@ -1,6 +1,6 @@
 CCGWAS <- function( outcome_file , A_name , B_name , sumstats_fileA1A0 , sumstats_fileB1B0 , K_A1A0 , K_A1A0_high , K_A1A0_low , K_B1B0 , K_B1B0_high ,K_B1B0_low ,
                     h2l_A1A0 , h2l_B1B0 , rg_A1A0_B1B0 , intercept_A1A0_B1B0 , m , N_A1 , N_B1 , N_A0 , N_B0 , N_overlap_A0B0 ,
-                    subtype_data=FALSE , sumstats_fileA1B1=NA , N_A1_inA1B1= NA , N_B1_inA1B1=NA , intercept_A1A0_A1B1 =NA , intercept_B1B0_A1B1=NA ){
+                    subtype_data=FALSE , sumstats_fileA1B1=NA , N_A1_inA1B1= NA , N_B1_inA1B1=NA , intercept_A1A0_A1B1 =NA , intercept_B1B0_A1B1=NA ,save.all=FALSE){
 
   if(rg_A1A0_B1B0>0.8){stop("CC-GWAS is intended for comparing two different disorders with genetic correlation <0.8")}
 
@@ -635,7 +635,13 @@ CCGWAS <- function( outcome_file , A_name , B_name , sumstats_fileA1A0 , sumstat
   }
   stats <- stats[order(stats$CHR,stats$BP),]
   show_line <- paste("Of ",format(dim(stats)[1],big.mark=","), " SNPs tested, " , format(sum(stats$CCGWAS_signif),big.mark=",")," are significantly associated with case-case status (labelled as 1 in CCGWAS_signif column in outcome).",sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
-  fwrite(stats[,keep],file=paste(file_outcome,".gz",sep=""),col.names=TRUE,na="NA" ,row.names=FALSE,quote=FALSE,sep="\t")
+  if(save.all==TRUE){fwrite(stats[,keep],file=paste(file_outcome,".ALL.gz",sep=""),col.names=TRUE,na="NA" ,row.names=FALSE,quote=FALSE,sep="\t")}
+  if(save.all==TRUE){show_line <- paste("Saving *ALL* results to ",file_outcome,".ALL.gz... (Note that these results may include SNPs that should be removed to prevent type I error!)",sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)}
+
+  d <- stats
+  d <- d[ {as.numeric(d$OLS_pval)<5e-8 & as.numeric(d$CCGWAS_signif)==0}==FALSE ,] 
+  d <- d[,c("SNP","CHR","BP","EA","NEA","OLS_beta","OLS_se","OLS_pval","Exact_beta","Exact_se","Exact_pval","CCGWAS_signif")] 
+  fwrite(d,file=paste(file_outcome,".gz",sep=""),col.names=TRUE,na="NA" ,row.names=FALSE,quote=FALSE,sep="\t")
   show_line <- paste("Saving results to ",file_outcome,".gz...",sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
 
 ###########################
