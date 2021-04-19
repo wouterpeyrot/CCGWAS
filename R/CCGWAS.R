@@ -652,11 +652,22 @@ CCGWAS <- function( outcome_file , A_name , B_name , sumstats_fileA1A0 , sumstat
   if(save.all==TRUE){fwrite(stats[,keep],file=paste(file_outcome,".ALL.gz",sep=""),col.names=TRUE,na="NA" ,row.names=FALSE,quote=FALSE,sep="\t")}
   if(save.all==TRUE){show_line <- paste("Saving *ALL* results to ",file_outcome,".ALL.gz... (Note that these results may include SNPs that should be removed to prevent type I error!)",sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)}
 
-  d <- stats
-  d <- d[ {as.numeric(d$OLS_pval)<5e-8 & as.numeric(d$CCGWAS_signif)==0}==FALSE ,] 
-  d <- d[,c("SNP","CHR","BP","EA","NEA","OLS_beta","OLS_se","OLS_pval","Exact_beta","Exact_se","Exact_pval","CCGWAS_signif")] 
-  fwrite(d,file=paste(file_outcome,".gz",sep=""),col.names=TRUE,na="NA" ,row.names=FALSE,quote=FALSE,sep="\t")
-  show_line <- paste("Saving results to ",file_outcome,".gz...",sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
+  if(include_A1B1==FALSE){
+    d <- stats
+    d <- d[ {as.numeric(d$OLS_pval)<5e-8 & as.numeric(d$CCGWAS_signif)==0}==FALSE ,] 
+    d <- d[,c("SNP","CHR","BP","EA","NEA","OLS_beta","OLS_se","OLS_pval","Exact_beta","Exact_se","Exact_pval","CCGWAS_signif")] 
+    fwrite(d,file=paste(file_outcome,".gz",sep=""),col.names=TRUE,na="NA" ,row.names=FALSE,quote=FALSE,sep="\t")
+    show_line <- paste("Saving results to ",file_outcome,".gz...",sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
+  }
+
+  if(include_A1B1==TRUE){
+    d <- stats
+    d <- d[ {as.numeric(d$OLSplus_pval)<5e-8 & as.numeric(d$CCGWAS_signif)==0}==FALSE ,] 
+    d <- d[,c("SNP","CHR","BP","EA","NEA","OLSplus_beta","OLSplus_se","OLSplus_pval","Exactplus_beta","Exactplus_se","Exactplus_pval","CCGWAS_signif")] 
+    fwrite(d,file=paste(file_outcome,".gz",sep=""),col.names=TRUE,na="NA" ,row.names=FALSE,quote=FALSE,sep="\t")
+    show_line <- paste("Saving results to ",file_outcome,".gz...",sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
+  }
+
 
 ###########################
 ## End
