@@ -308,7 +308,7 @@ CCGWAS <- function( outcome_file , A_name , B_name , sumstats_fileA1A0 , sumstat
   show_line <- paste("Plot of F_ST,causal (see paper for details) saved to ",file_Fst,sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
   
   Fst<-get_Fst(h2l_A=h2l_A1A0,K_A=K_A1A0,h2l_B=h2l_B1B0,K_B=K_B1B0,rg_AB=rg_A1A0_B1B0,m=m,show_info=FALSE)
-  fwrite(cbind(Fst),file=file_Fst.txt,col.names=TRUE,na="NA" ,row.names=TRUE,quote=FALSE,sep="\t")
+  fwrite(as.data.frame(cbind(Fst)),file=file_Fst.txt,col.names=TRUE,na="NA" ,row.names=TRUE,quote=FALSE,sep="\t")
   d<-data.frame(array(NA,dim=c(1,0)))
   d$A1_popmean <- (1-K_A1A0)*sqrt(Fst$Fst_A1A0)
   d$A0_popmean <-   (K_A1A0)*sqrt(Fst$Fst_A1A0)
