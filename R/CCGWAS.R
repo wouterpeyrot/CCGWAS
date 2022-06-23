@@ -6,6 +6,7 @@ CCGWAS <- function( outcome_file , A_name , B_name , sumstats_fileA1A0 , sumstat
 
   file_outcome<-paste(outcome_file,".results",sep="")
   file_Fst<-paste(outcome_file,".Fst.pdf",sep="")
+  file_Fst.txt<-paste(outcome_file,".Fst.txt",sep="")
   file_log<-paste(outcome_file,".log",sep="")
   file_temp<-paste(outcome_file,".temp",sep="")
 
@@ -200,11 +201,11 @@ CCGWAS <- function( outcome_file , A_name , B_name , sumstats_fileA1A0 , sumstat
     show_line <- paste("...median(beta_viaNeff/beta_viaOR) = ",round(meadian_ratio,digits=4)," for non-null SNPs with OR<0.99 | OR>1.01 (SHOULD BE CLOSE TO 1)",sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
     show_line <- paste("   (in versions prior to June 23, 2022, this double-check was based on mean(); meadian() is more appropriate due to outliers in beta_viaOR. Also see Grotzinger et al. 2022 Biol Psychiatry.)",sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
     if( meadian_ratio > 1.1 ){
-      show_line <- paste("...CC-GWAS is being aborted, because mean(beta_viaNeff/beta_viaOR) = ",round(meadian_ratio,digits=4)," > 1.1 risking inflated type I error at stress test SNPs. Please contact wpeyrot@hsph.harvard.edu to resolve this issue.",sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
+      show_line <- paste("...CC-GWAS is being aborted, because mean(beta_viaNeff/beta_viaOR) = ",round(meadian_ratio,digits=4)," > 1.1 risking inflated type I error at stress test SNPs. Please contact peyrot.w@gmail.com to resolve this issue.",sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
       stop(show_line)
     }
     if( meadian_ratio < 0.9 ){
-      show_line <- paste("...CC-GWAS is being aborted, because mean(beta_viaNeff/beta_viaOR) = ",round(meadian_ratio,digits=4)," < 0.9 risking inflated type I error at stress test SNPs. Please contact wpeyrot@hsph.harvard.edu to resolve this issue.",sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
+      show_line <- paste("...CC-GWAS is being aborted, because mean(beta_viaNeff/beta_viaOR) = ",round(meadian_ratio,digits=4)," < 0.9 risking inflated type I error at stress test SNPs. Please contact peyrot.w@gmail.com to resolve this issue.",sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
       stop(show_line)
     }
     show_line <- paste("...resulting in ",format(nsnps_new,big.mark=",")," SNPs for ",comparison,sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
@@ -307,6 +308,7 @@ CCGWAS <- function( outcome_file , A_name , B_name , sumstats_fileA1A0 , sumstat
   show_line <- paste("Plot of F_ST,causal (see paper for details) saved to ",file_Fst,sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
   
   Fst<-get_Fst(h2l_A=h2l_A1A0,K_A=K_A1A0,h2l_B=h2l_B1B0,K_B=K_B1B0,rg_AB=rg_A1A0_B1B0,m=m,show_info=FALSE)
+  fwrite(cbind(Fst),file=file_Fst.txt,col.names=TRUE,na="NA" ,row.names=FALSE,quote=FALSE,sep="\t")
   d<-data.frame(array(NA,dim=c(1,0)))
   d$A1_popmean <- (1-K_A1A0)*sqrt(Fst$Fst_A1A0)
   d$A0_popmean <-   (K_A1A0)*sqrt(Fst$Fst_A1A0)
