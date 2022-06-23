@@ -195,15 +195,16 @@ CCGWAS <- function( outcome_file , A_name , B_name , sumstats_fileA1A0 , sumstat
     stats$se <- sqrt(1/stats$Neff) 
     stats$beta <- stats$z*stats$se
     temp_index <- { stats$OR<0.99 | stats$OR>1.01 }
-    mean_ratio <- mean((stats$beta/stats$beta_viaOR)[temp_index])
+    meadian_ratio <- median((stats$beta/stats$beta_viaOR)[temp_index])
     show_line <- paste("...cor(beta_viaNeff,beta_viaOR) = ",round(cor(stats$beta,stats$beta_viaOR),digits=4)," (SHOULD BE CLOSE TO 1)",sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
-    show_line <- paste("...mean(beta_viaNeff/beta_viaOR) = ",round(mean_ratio,digits=4)," for non-null SNPs with OR<0.99 | OR>1.01 (SHOULD BE CLOSE TO 1)",sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
-    if( mean_ratio > 1.1 ){
-      show_line <- paste("...CC-GWAS is being aborted, because mean(beta_viaNeff/beta_viaOR) = ",round(mean_ratio,digits=4)," > 1.1 risking inflated type I error at stress test SNPs. Please contact wpeyrot@hsph.harvard.edu to resolve this issue.",sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
+    show_line <- paste("...median(beta_viaNeff/beta_viaOR) = ",round(meadian_ratio,digits=4)," for non-null SNPs with OR<0.99 | OR>1.01 (SHOULD BE CLOSE TO 1)",sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
+    show_line <- paste("   (in versions prior to June 23, 2022, this double-check was based on mean(); meadian() is more appropriate due to outliers in beta_viaOR. Also see Grotzinger et al. 2022 Biol Psychiatry.)",sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
+    if( meadian_ratio > 1.1 ){
+      show_line <- paste("...CC-GWAS is being aborted, because mean(beta_viaNeff/beta_viaOR) = ",round(meadian_ratio,digits=4)," > 1.1 risking inflated type I error at stress test SNPs. Please contact wpeyrot@hsph.harvard.edu to resolve this issue.",sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
       stop(show_line)
     }
-    if( mean_ratio < 0.9 ){
-      show_line <- paste("...CC-GWAS is being aborted, because mean(beta_viaNeff/beta_viaOR) = ",round(mean_ratio,digits=4)," < 0.9 risking inflated type I error at stress test SNPs. Please contact wpeyrot@hsph.harvard.edu to resolve this issue.",sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
+    if( meadian_ratio < 0.9 ){
+      show_line <- paste("...CC-GWAS is being aborted, because mean(beta_viaNeff/beta_viaOR) = ",round(meadian_ratio,digits=4)," < 0.9 risking inflated type I error at stress test SNPs. Please contact wpeyrot@hsph.harvard.edu to resolve this issue.",sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
       stop(show_line)
     }
     show_line <- paste("...resulting in ",format(nsnps_new,big.mark=",")," SNPs for ",comparison,sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
