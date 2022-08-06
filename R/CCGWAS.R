@@ -201,11 +201,11 @@ CCGWAS <- function( outcome_file , A_name , B_name , sumstats_fileA1A0 , sumstat
     show_line <- paste("...median(beta_viaNeff/beta_viaOR) = ",round(meadian_ratio,digits=4)," for non-null SNPs with OR<0.99 | OR>1.01 (SHOULD BE CLOSE TO 1)",sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
     show_line <- paste("   (in versions prior to June 23, 2022, this double-check was based on mean(); meadian() is more appropriate due to outliers in beta_viaOR. Also see Grotzinger et al. 2022 Biol Psychiatry.)",sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
     if( meadian_ratio > 1.1 ){
-      show_line <- paste("...CC-GWAS is being aborted, because mean(beta_viaNeff/beta_viaOR) = ",round(meadian_ratio,digits=4)," > 1.1 risking inflated type I error at stress test SNPs. Please contact peyrot.w@gmail.com to resolve this issue.",sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
+      show_line <- paste("...CC-GWAS is being aborted, because median(beta_viaNeff/beta_viaOR) = ",round(meadian_ratio,digits=4)," > 1.1 risking inflated type I error at stress test SNPs. Please contact peyrot.w@gmail.com to resolve this issue.",sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
       stop(show_line)
     }
     if( meadian_ratio < 0.9 ){
-      show_line <- paste("...CC-GWAS is being aborted, because mean(beta_viaNeff/beta_viaOR) = ",round(meadian_ratio,digits=4)," < 0.9 risking inflated type I error at stress test SNPs. Please contact peyrot.w@gmail.com to resolve this issue.",sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
+      show_line <- paste("...CC-GWAS is being aborted, because median(beta_viaNeff/beta_viaOR) = ",round(meadian_ratio,digits=4)," < 0.9 risking inflated type I error at stress test SNPs. Please contact peyrot.w@gmail.com to resolve this issue.",sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
       stop(show_line)
     }
     show_line <- paste("...resulting in ",format(nsnps_new,big.mark=",")," SNPs for ",comparison,sep="") ; cat(show_line,"\n") ; write(show_line,file=file_log,append=TRUE)
