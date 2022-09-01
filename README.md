@@ -1,6 +1,6 @@
 # Running CC-GWAS
 
-The `CCGWAS` R package provides a tool for case-case association testing of two different disorders based on their respective case-control GWAS results. The CC-GWAS method is described in detail in Peyrot & Price. 2020 bioRxiv. If you have any questions or suggestions for improvement, please let us know at: peyrot.w@gmail.com.
+The `CCGWAS` R package provides a tool for case-case association testing of two different disorders based on their respective case-control GWAS results. The CC-GWAS method is described in detail in Peyrot & Price. 2021 Nature Genetics. A tutorial video is avalable here: https://www.youtube.com/watch?v=Hr1upC0U8Q8. If you have any questions or suggestions for improvement, please let us know at: peyrot.w@gmail.com.
 
 ## Getting Started
 
@@ -106,4 +106,4 @@ CCGWAS( outcome_file = "test.out" , A_name = "SCZ" , B_name = "BIP" ,
         
 ``` 
 
-This provides the results for 10 SNPs from the schizophrenia (SCZ) vs bipolar disorder (BIP) case-case comparison, described in detail in Peyrot & Price. 2020 bioRxiv.
+This provides the results for 10 SNPs from the schizophrenia (SCZ) vs bipolar disorder (BIP) case-case comparison, described in detail in Peyrot & Price. 2021 Nature Genetics.
